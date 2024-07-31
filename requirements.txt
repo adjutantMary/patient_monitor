@@ -1,0 +1,4 @@
+reflex
+sqlalchemy
+psycopg2-binary
+python-dotenv

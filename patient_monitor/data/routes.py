@@ -1,0 +1,6 @@
+HOME_ROUTE = '/'
+ABOUT_ROUTE = '/about'
+CONTACT_ROUTE = '/contact-us'
+CONTACT_ENTRIES_ROUTE = '/contact-us/entries'
+PRICING_ROUTE = '/pricing'
+PATIENT_ROUTE = '/patient/1'
