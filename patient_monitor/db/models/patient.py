@@ -139,3 +139,96 @@ class MedicalHistory(rx.Model, table=True):
                 microsecond=0
             ).isoformat()
         return d
+    
+class Diagnosis(rx.Model, table=True):
+    __tablename__ = 'diagnosis'
+    
+    id: UUID = Field(
+        default=None,
+        sa_column=sa.Column(
+            "id",
+            sa.UUID(as_uuid=True),
+            primary_key=True,
+            default=uuid4,
+        ),
+    )
+    
+    main_issue: str
+    mkb: str
+    ksg: str
+    standart:str
+    
+    diagnosis_type_id: int = Field(foreign_key="diagnosis_type.id")
+    diagnosis_type: Optional["DiagnosisType"] = Relationship(
+        back_populates="diagnosis"
+    )
+    
+    created_at: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.func.now(),
+        )
+    )
+    updated_at: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "updated_at",
+            sa.DateTime(),
+            server_default=sa.func.now(),
+            onupdate=sa.func.now()
+        )
+    )
+    
+    def dict(self, *args, **kwargs) -> dict:
+        d = super().dict(*args, **kwargs)
+        d["id"] = str(self.id)
+        d["patient_id"] = str(self.patient_id)
+        d["created_at"] = self.created_at.replace(
+                microsecond=0
+            ).isoformat()
+        d["updated_at"] = self.updated_at.replace(
+                microsecond=0
+            ).isoformat()
+        return d
+    
+class DiagnosisType(rx.Model, table=True):
+    __tablename__ = 'diagnosis_type'
+    
+    name: str
+    
+    diagnosis: List["Diagnosis"] = Relationship(
+        back_populates="diagnosis_type"
+    )
+    
+    created_at: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.func.now(),
+        )
+    )
+    updated_at: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "updated_at",
+            sa.DateTime(),
+            server_default=sa.func.now(),
+            onupdate=sa.func.now()
+        )
+    )
+    
+    def dict(self, *args, **kwargs) -> dict:
+        d = super().dict(*args, **kwargs)
+        d["id"] = str(self.id)
+        d["created_at"] = self.created_at.replace(
+                microsecond=0
+            ).isoformat()
+        d["updated_at"] = self.updated_at.replace(
+                microsecond=0
+            ).isoformat()
+        d["qwe"] = 1
+        return d
+    

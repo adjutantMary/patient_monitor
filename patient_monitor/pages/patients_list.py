@@ -5,11 +5,12 @@ from ..db.managers import *
 from typing import List
 
 
-def index() -> rx.Component:
+
+def patients_list() -> rx.Component:
     return base_page(
         rx.vstack(
             rx.text(
-                "Нужно придумать что мы тут будем хранить",
+                "Тут функциональная таблица с пациентами из базы",
                 size="5",
             ),
             spacing="5",

@@ -1,6 +1,6 @@
 import reflex as rx
-from ..data import routes
-from ..states.nav_state import NavState
+from ..navigation.nav_state import NavState
+from ..navigation import routes
 
 def navbar_link(text: str, url: str) -> rx.Component:
     return rx.link(
@@ -22,16 +22,10 @@ def navbar() -> rx.Component:
                     href=routes.HOME_ROUTE,
                     ),
                 rx.hstack(
-                    navbar_link("Все пациенты", routes.HOME_ROUTE),
-                    navbar_link("Мои пациенты", routes.ABOUT_ROUTE),
+                    navbar_link("Пациенты", routes.PATIENTS_LIST_ROUTE),
                     spacing="5",
                 ),
                 rx.hstack(
-                    rx.button(
-                        "Sign Up",
-                        size="3",
-                        variant="outline",
-                    ),
                     rx.button("Log In", size="3"),
                     spacing="4",
                     justify="end",
@@ -57,13 +51,10 @@ def navbar() -> rx.Component:
                         rx.icon("menu", size=30)
                     ),
                     rx.menu.content(
-                        rx.menu.item("Home", on_click=NavState.to_home),
-                        rx.menu.item("About", on_click=NavState.to_about),
-                        rx.menu.item("Pricing", on_click=NavState.to_pricing),
-                        rx.menu.item("Contact", on_click=NavState.to_contact),
+                        rx.menu.item("На главную", on_click=NavState.to_home),
+                        rx.menu.item("Пациенты", on_click=NavState.to_patients_list),
                         rx.menu.separator(),
                         rx.menu.item("Log in"),
-                        rx.menu.item("Sign up"),
                     ),
                     justify="end",
                 ),
