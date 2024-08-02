@@ -3,6 +3,7 @@ from sqlmodel import Field, Relationship
 import sqlalchemy as sa
 from uuid import UUID, uuid4
 from datetime import datetime, date
+from typing import Optional, List
 
 class Patient(rx.Model, table=True):
     __tablename__ = 'patient'
@@ -31,6 +32,10 @@ class Patient(rx.Model, table=True):
     is_man : bool = Field(
         default=True
     )
+    
+    medical_histories: List["MedicalHistory"] = Relationship(
+        back_populates="patient"
+    )
 
     created_at: datetime = Field(
         default=None,
@@ -54,6 +59,79 @@ class Patient(rx.Model, table=True):
         d = super().dict(*args, **kwargs)
         d["id"] = str(self.id)
         d["birthday"] = self.birthday.isoformat()
+        d["created_at"] = self.created_at.replace(
+                microsecond=0
+            ).isoformat()
+        d["updated_at"] = self.updated_at.replace(
+                microsecond=0
+            ).isoformat()
+        return d
+    
+
+class MedicalHistory(rx.Model, table=True):
+    __tablename__ ='medical_history'
+    
+    id: UUID = Field(
+        default=None,
+        sa_column=sa.Column(
+            "id",
+            sa.UUID(as_uuid=True),
+            primary_key=True,
+            default=uuid4,
+        ),
+    )
+    patient_id: UUID = Field(foreign_key="patient.id") 
+    patient: Optional[Patient] = Relationship(
+        back_populates="medical_histories"
+    )
+    
+    is_active: bool = Field(default=False)
+    lotus_id: str
+    number: str
+    current_department_name: str
+    
+    income_date: date = Field(
+        default=None,
+        sa_column=sa.Column(
+            "income_date",
+            sa.Date()
+        )
+    )
+    outcome_date: date = Field(
+        default=None,
+        sa_column=sa.Column(
+            "outcome_date",
+            sa.Date(),
+            nullable=True
+        ),
+    )
+        
+    
+    
+    created_at: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.func.now(),
+        )
+    )
+    updated_at: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "updated_at",
+            sa.DateTime(),
+            server_default=sa.func.now(),
+            onupdate=sa.func.now()
+        )
+    )
+    
+    def dict(self, *args, **kwargs) -> dict:
+        d = super().dict(*args, **kwargs)
+        d["id"] = str(self.id)
+        d["income_date"] = self.income_date.isoformat()
+        d["outcome_date"] = self.outcome_date.isoformat()
+        d["patient_id"] = str(self.patient_id)
         d["created_at"] = self.created_at.replace(
                 microsecond=0
             ).isoformat()
