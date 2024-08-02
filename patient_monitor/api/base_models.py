@@ -7,3 +7,6 @@ class PatientBase(BaseModel):
     birthday: date
     is_man: bool
     
+
+class PatientsListBase(BaseModel):
+    patients: list[PatientBase] | None

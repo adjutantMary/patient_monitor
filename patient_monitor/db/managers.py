@@ -28,6 +28,11 @@ class PatientManager:
                 .where(Patient.lotus_id == lotus_id)
             ).first()
             
-            
+    def get_all_patients(self):
+        with rx.session() as session:
+            return session.exec(
+                select(Patient)
+            ).all()
+             
         
     
