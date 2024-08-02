@@ -2,6 +2,7 @@ import reflex as rx
 from ..api.base_models import PatientBase
 from ..db.models import Patient
 from sqlmodel import select
+from sqlalchemy.exc import IntegrityError
 
 class PatientManager:
     def create_patient(self, patient_data:PatientBase):
@@ -13,7 +14,10 @@ class PatientManager:
                 is_man=patient_data.is_man,
             )
             session.add(patient)
-            session.commit()
+            try:
+                session.commit()
+            except IntegrityError:
+                return None
             session.refresh(patient)
             return patient
     
