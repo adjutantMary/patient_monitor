@@ -86,22 +86,22 @@ class MedicalHistory(rx.Model, table=True):
     )
     
     is_active: bool = Field(default=False)
-    lotus_id: str
+    lotus_id: str = Field(unique=True)
     number: str
     current_department_name: str
     
-    income_date: date = Field(
+    income_datetime: datetime = Field(
         default=None,
         sa_column=sa.Column(
             "income_date",
-            sa.Date()
+            sa.DateTime()
         )
     )
-    outcome_date: date = Field(
+    outcome_datetime: datetime = Field(
         default=None,
         sa_column=sa.Column(
             "outcome_date",
-            sa.Date(),
+            sa.DateTime(),
             nullable=True
         ),
     )
@@ -129,8 +129,8 @@ class MedicalHistory(rx.Model, table=True):
     def dict(self, *args, **kwargs) -> dict:
         d = super().dict(*args, **kwargs)
         d["id"] = str(self.id)
-        d["income_date"] = self.income_date.isoformat()
-        d["outcome_date"] = self.outcome_date.isoformat()
+        d["income_datetime"] = self.income_datetime.isoformat()
+        d["outcome_datetime"] = self.outcome_datetime.isoformat() if self.outcome_datetime else None
         d["patient_id"] = str(self.patient_id)
         d["created_at"] = self.created_at.replace(
                 microsecond=0
