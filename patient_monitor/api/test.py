@@ -34,3 +34,8 @@ async def get_all_mh(patient_id:str) -> MedicalHistoryListBase:
     mh_list = pm.get_all_medical_histories(patient_id=patient_id)
     return MedicalHistoryListBase(mh_list=[mh.dict() for mh in mh_list])
     
+async def get_active_mh(patient_id:str) -> MedicalHistoryListBase:
+    '''Активные мед истории'''
+    pm = PatientManager()
+    mh_list = pm.get_active_medical_history(patient_id=patient_id)
+    return MedicalHistoryListBase(mh_list=[mh.dict() for mh in mh_list])

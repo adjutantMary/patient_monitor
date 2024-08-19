@@ -42,13 +42,15 @@ class PatientManager:
                 where(MedicalHistory.patient_id == patient.id)
             ).all()
     
-    def get_active_medical_history(self, patiten_id:str):
+    
+    def get_active_medical_history(self, patient_id:str):
+        '''Фильтрация мед историй по активности: True/False'''
         with rx.session() as session:
-            patient = self.get_patient_by_lotus_id(lotus_id=patiten_id)
+            patient = self.get_patient_by_lotus_id(lotus_id=patient_id)
             return session.exec(
-                    select(MedicalHistory).
-                    where(MedicalHistory.patient_id == patient.id)
-                ).first()
+                select(MedicalHistory).filter(MedicalHistory.is_active == True, MedicalHistory.patient_id == patient.id)
+            ).all()
+    
         
 class MedicalHistoryManager:
     def create_medical_history(self, mh_data: MedicalHistoryBase):
