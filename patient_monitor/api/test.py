@@ -19,7 +19,7 @@ async def create_patient(patient_data: PatientBase):
     patient = pm.create_patient(patient_data=patient_data)
     return patient.dict() if patient else {"message": "пациент с таким lotus_id уже существует"}
 
-async def create_mh(mh_data: MedicalHistoryBase):
+async def create_mh(mh_data: PostMedicatHistoryBase):
     mhm = MedicalHistoryManager()
     mh = mhm.create_medical_history(mh_data=mh_data)
     return mh.dict() if mh else {"message": "история болезни с таким lotus_id уже существует"}
@@ -29,13 +29,13 @@ async def get_mh(lotus_id: str):
     mh = mhm.get_medical_history_by_lotus_id(lotus_id=lotus_id)
     return mh.dict() if mh else {"message": "Истории болезни с такой lotus_id не существует"} 
 
-async def get_all_mh(patient_id:str) -> MedicalHistoryListBase:
+async def get_all_mh(patient_id:str) -> GetHistoryListBase:
     pm = PatientManager()
     mh_list = pm.get_all_medical_histories(patient_id=patient_id)
-    return MedicalHistoryListBase(mh_list=[mh.dict() for mh in mh_list])
+    return GetHistoryListBase(mh_list=[mh.dict() for mh in mh_list])
     
-async def get_active_mh(patient_id:str) -> MedicalHistoryListBase:
+async def get_active_mh(patient_id:str) -> GetHistoryListBase:
     '''Активные мед истории'''
     pm = PatientManager()
     mh_list = pm.get_active_medical_history(patient_id=patient_id)
-    return MedicalHistoryListBase(mh_list=[mh.dict() for mh in mh_list])
+    return GetHistoryListBase(mh_list=[mh.dict() for mh in mh_list])

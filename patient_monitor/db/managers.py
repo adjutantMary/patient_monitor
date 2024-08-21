@@ -53,7 +53,7 @@ class PatientManager:
     
         
 class MedicalHistoryManager:
-    def create_medical_history(self, mh_data: MedicalHistoryBase):
+    def create_medical_history(self, mh_data: PostMedicatHistoryBase):
         with rx.session() as session:
             patient = PatientManager().get_patient_by_lotus_id(lotus_id=mh_data.patient_lotus_id)
             mh = MedicalHistory(
@@ -81,7 +81,3 @@ class MedicalHistoryManager:
                 .where(MedicalHistory.lotus_id == lotus_id)
             ).first()
             
-
-
-        
-    
