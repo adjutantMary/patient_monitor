@@ -4,10 +4,16 @@ from .api import *
 from .db.models import *
 from .navigation.nav_state import NavState
 from .navigation import routes
+from . import patient_info, navigation
 
 app = rx.App()
 app.add_page(index)
 app.add_page(patients_list, route=routes.PATIENTS_LIST_ROUTE)
+
+app.add_page(patient_info.patient_list_page,
+             route=navigation.routes.PATIENT_INFO_ROUTE,
+             on_load=patient_info.PatientInfoState.load_patients
+)
 
 
 
