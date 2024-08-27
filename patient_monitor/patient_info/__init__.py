@@ -1,10 +1,10 @@
-from .state import PatientInfoState
-from .list import patient_list_page
+from .state import PatientInfoState 
+from .about import patient_detail_page
 
 
 
 
 __all__=[
     'PatientInfoState',
-    'patient_list_page'
+    'patient_detail_page',
 ]

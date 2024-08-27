@@ -10,12 +10,9 @@ app = rx.App()
 app.add_page(index)
 app.add_page(patients_list, route=routes.PATIENTS_LIST_ROUTE)
 
-app.add_page(patient_info.patient_list_page,
-             route=navigation.routes.PATIENT_INFO_ROUTE,
-             on_load=patient_info.PatientInfoState.load_patients
-)
-
-
+app.add_page(patient_info.patient_detail_page,
+             route="/patient/[lotus_id]",
+             on_load=patient_info.PatientInfoState.get_detail_patient_info)
 
 app.api.add_api_route("/patient", get_patient)
 app.api.add_api_route("/patient", create_patient, methods=["POST"])
