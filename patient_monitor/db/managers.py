@@ -81,3 +81,60 @@ class MedicalHistoryManager:
                 .where(MedicalHistory.lotus_id == lotus_id)
             ).first()
             
+
+class DiagnosisManager:
+    """ менеджер апи запросов к диагнозам """
+    def create_diagnosis(self, diagnosis_data: DiagnosisBase):
+        with rx.session() as session:
+            d_base = Diagnosis(
+                main_issue=diagnosis_data.main_issue,
+                mkb=diagnosis_data.mkb,
+                ksg=diagnosis_data.ksg,
+                standart=diagnosis_data.standart,
+                diagnosis_type=diagnosis_data.diagnosis_type,
+                diagnosis_type_id=diagnosis_data.diagnosis_type_id,
+                created_at=diagnosis_data.created_at,
+                updated_at=diagnosis_data.updated_at
+            )
+            session.add(d_base)
+            try:
+                session.commit()
+            except IntegrityError as e:
+                print(e)
+                return None
+            session.refresh(d_base)
+            return d_base
+    
+    def get_diagnosis_list(self):
+        with rx.session() as session:
+            return session.exec(
+                select(Diagnosis)
+            ).all()
+            
+    def get_diagnosis_by_type_id(self, diagnosis_type_id: str):
+        with rx.session() as session:
+            return session.exec(
+                select(Diagnosis)
+                .where(Diagnosis.diagnosis_type_id == diagnosis_type_id)
+            ).all()
+
+
+class DiagnosisTypeManager:
+    """ менеджер апи запросов к типам диагнозов """
+    def create_diagnosis_type(self, dt_data: DiagnosisTypeBase):
+        with rx.session() as session:
+            dt_base = DiagnosisType(
+                name=dt_data.name,
+                diagnosis=dt_data.diagnosis,
+                created_at=dt_data.created_at,
+                updated_at=dt_data.updated_at
+            )
+            session.add(dt_base)
+            try:
+                session.commit()
+            except IntegrityError as e:
+                print(e)
+                return None
+            session.refresh(dt_base)
+            return dt_base
+    
