@@ -4,6 +4,7 @@ from sqlmodel import select
 
 from ..db.models.patient import Patient
 from ..api.base_models import PatientBase
+from ..db.managers import PatientManager
 
 
 class PatientInfoState(rx.State):
@@ -12,6 +13,7 @@ class PatientInfoState(rx.State):
     
     patients: List['Patient'] = []
     patient: Optional['Patient'] = None
+    patient_mh: List = []
     
     @rx.var
     def patient_lotus_id(self):
@@ -23,7 +25,13 @@ class PatientInfoState(rx.State):
                 select(PatientBase)
             ).all()
             self.patients = result
-            
+        
+    def load_medical_histories(self):
+        # начала работать с подргрузкой медицинский историй пациента. не запускала эту функцию
+        pm = PatientManager()
+        self.patient_mh = [patient.dict() for patient in pm.get_all_medical_histories()]
+        print(self.patient_mh)
+        
     def get_detail_patient_info(self):
         with rx.session() as session:
             if self.patient_lotus_id == "":
@@ -35,3 +43,4 @@ class PatientInfoState(rx.State):
                 )
             ).one_or_none()
             self.patient = result
+
