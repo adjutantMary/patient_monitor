@@ -5,6 +5,8 @@ from .db.models import *
 from .navigation.nav_state import NavState
 from .navigation import routes
 from . import patient_info, navigation
+from . import db
+
 
 app = rx.App()
 app.add_page(index)
@@ -21,3 +23,5 @@ app.api.add_api_route("/med-history", create_mh, methods=["POST"])
 app.api.add_api_route("/med-history", get_mh)
 app.api.add_api_route("/med-history/all", get_all_mh)
 app.api.add_api_route("/med-history/active", get_active_mh)
+app.api.add_api_route("/diagnosis_type", create_diagnosis_type, methods=["POST"])
+app.api.add_api_route("/diagnosis", create_diagnosis, methods=["POST"])

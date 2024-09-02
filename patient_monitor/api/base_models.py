@@ -43,7 +43,12 @@ class PostHistoryListBase(BaseModel):
 class GetHistoryListBase(BaseModel):
     mh_list: list[GetMedicalHistoryBase] | None = None
     
-        
+class DiagnosisTypeBase(BaseModel):
+# застряла на этапе отношений поля diagnosis с DiagnosisBase. one to many?
+        name: str
+        diagnosis: List["DiagnosisBase"] | None
+        created_at: datetime = None 
+        updated_at: datetime = None
 
 class DiagnosisBase(BaseModel):
     # для этой схемы получилось создать экземпляр в бдшке
@@ -56,13 +61,7 @@ class DiagnosisBase(BaseModel):
     created_at: datetime = None 
     updated_at: datetime = None
     
-class DiagnosisTypeBase(BaseModel):
-    # застряла на этапе отношений поля diagnosis с DiagnosisBase. one to many?
-    name: str
-    diagnosis: List[DiagnosisBase] | None
-    created_at: datetime = None 
-    updated_at: datetime = None
-    
+
     
 class DiagnosisListBase(BaseModel):
     diagnosis: list[DiagnosisBase] | None

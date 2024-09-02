@@ -196,6 +196,16 @@ class Diagnosis(rx.Model, table=True):
 class DiagnosisType(rx.Model, table=True):
     __tablename__ = 'diagnosis_type'
     
+    id: UUID = Field(
+        default=None,
+        sa_column=sa.Column(
+            "id",
+            sa.UUID(as_uuid=True),
+            primary_key=True,
+            default=uuid4,
+        ),
+    )
+    
     name: str
     
     diagnosis: List["Diagnosis"] = Relationship(

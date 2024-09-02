@@ -24,6 +24,16 @@ async def create_mh(mh_data: PostMedicatHistoryBase):
     mh = mhm.create_medical_history(mh_data=mh_data)
     return mh.dict() if mh else {"message": "история болезни с таким lotus_id уже существует"}
 
+async def create_diagnosis_type(dt_data: DiagnosisTypeBase):
+    dtm = DiagnosisTypeManager()
+    diagnosis_type = dtm.create_diagnosis_type(dt_data=dt_data)
+    return dtm.dict() if diagnosis_type else {"message": "не удалось создать тип диагноза"}
+
+async def create_diagnosis(d_data: DiagnosisBase):
+    dm = DiagnosisManager()
+    diagnosis = dm.create_diagnosis_type(d_data=d_data)
+    return dm.dict() if diagnosis else {"message": "не удалось создать диагноз"}
+
 async def get_mh(lotus_id: str):
     mhm = MedicalHistoryManager()
     mh = mhm.get_medical_history_by_lotus_id(lotus_id=lotus_id)

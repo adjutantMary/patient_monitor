@@ -84,17 +84,17 @@ class MedicalHistoryManager:
 
 class DiagnosisManager:
     """ менеджер апи запросов к диагнозам """
-    def create_diagnosis(self, diagnosis_data: DiagnosisBase):
+    def create_diagnosis(self, d_data: DiagnosisBase):
         with rx.session() as session:
             d_base = Diagnosis(
-                main_issue=diagnosis_data.main_issue,
-                mkb=diagnosis_data.mkb,
-                ksg=diagnosis_data.ksg,
-                standart=diagnosis_data.standart,
-                diagnosis_type=diagnosis_data.diagnosis_type,
-                diagnosis_type_id=diagnosis_data.diagnosis_type_id,
-                created_at=diagnosis_data.created_at,
-                updated_at=diagnosis_data.updated_at
+                main_issue=d_data.main_issue,
+                mkb=d_data.mkb,
+                ksg=d_data.ksg,
+                standart=d_data.standart,
+                diagnosis_type=d_data.diagnosis_type,
+                diagnosis_type_id=d_data.diagnosis_type_id,
+                created_at=d_data.created_at,
+                updated_at=d_data.updated_at
             )
             session.add(d_base)
             try:
@@ -128,6 +128,7 @@ class DiagnosisTypeManager:
                 diagnosis=dt_data.diagnosis,
                 created_at=dt_data.created_at,
                 updated_at=dt_data.updated_at
+            
             )
             session.add(dt_base)
             try:
@@ -137,4 +138,10 @@ class DiagnosisTypeManager:
                 return None
             session.refresh(dt_base)
             return dt_base
+    
+    def get_diagnosis_list(self):
+        with rx.session() as session:
+            return session.exec(
+                select(DiagnosisType)
+            ).all()
     
