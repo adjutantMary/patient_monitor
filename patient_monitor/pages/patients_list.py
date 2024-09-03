@@ -9,8 +9,15 @@ from ..states.patients_list import PatientListState
 
 def show_patient(patient: PatientBase):
     """Show a customer in a table row."""
+    
+    
     return rx.table.row(
-        rx.table.cell(patient.fio),
+        rx.table.cell(
+            rx.link(
+                patient.fio,
+                href="/patient/" + patient.lotus_id
+            )
+        ),
         rx.table.cell(patient.birthday),
         rx.table.cell(rx.cond(patient.is_man, rx.icon("person-standing", color="blue"), rx.icon("person-standing", color="deeppink"))),
     )

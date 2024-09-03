@@ -42,16 +42,18 @@ class PatientManager:
                 where(MedicalHistory.patient_id == patient.id)
             ).all()
     
-    def get_active_medical_history(self, patiten_id:str):
+    
+    def get_active_medical_history(self, patient_id:str):
+        '''Фильтрация мед историй по активности: True/False'''
         with rx.session() as session:
-            patient = self.get_patient_by_lotus_id(lotus_id=patiten_id)
+            patient = self.get_patient_by_lotus_id(lotus_id=patient_id)
             return session.exec(
-                    select(MedicalHistory).
-                    where(MedicalHistory.patient_id == patient.id)
-                ).first()
+                select(MedicalHistory).filter(MedicalHistory.is_active == True, MedicalHistory.patient_id == patient.id)
+            ).all()
+    
         
 class MedicalHistoryManager:
-    def create_medical_history(self, mh_data: MedicalHistoryBase):
+    def create_medical_history(self, mh_data: PostMedicatHistoryBase):
         with rx.session() as session:
             patient = PatientManager().get_patient_by_lotus_id(lotus_id=mh_data.patient_lotus_id)
             mh = MedicalHistory(
@@ -80,6 +82,66 @@ class MedicalHistoryManager:
             ).first()
             
 
+class DiagnosisManager:
+    """ менеджер апи запросов к диагнозам """
+    def create_diagnosis(self, d_data: DiagnosisBase):
+        with rx.session() as session:
+            d_base = Diagnosis(
+                main_issue=d_data.main_issue,
+                mkb=d_data.mkb,
+                ksg=d_data.ksg,
+                standart=d_data.standart,
+                diagnosis_type=d_data.diagnosis_type,
+                diagnosis_type_id=d_data.diagnosis_type_id,
+                created_at=d_data.created_at,
+                updated_at=d_data.updated_at
+            )
+            session.add(d_base)
+            try:
+                session.commit()
+            except IntegrityError as e:
+                print(e)
+                return None
+            session.refresh(d_base)
+            return d_base
+    
+    def get_diagnosis_list(self):
+        with rx.session() as session:
+            return session.exec(
+                select(Diagnosis)
+            ).all()
+            
+    def get_diagnosis_by_type_id(self, diagnosis_type_id: str):
+        with rx.session() as session:
+            return session.exec(
+                select(Diagnosis)
+                .where(Diagnosis.diagnosis_type_id == diagnosis_type_id)
+            ).all()
 
-        
+
+class DiagnosisTypeManager:
+    """ менеджер апи запросов к типам диагнозов """
+    def create_diagnosis_type(self, dt_data: DiagnosisTypeBase):
+        with rx.session() as session:
+            dt_base = DiagnosisType(
+                name=dt_data.name,
+                diagnosis=dt_data.diagnosis,
+                created_at=dt_data.created_at,
+                updated_at=dt_data.updated_at
+            
+            )
+            session.add(dt_base)
+            try:
+                session.commit()
+            except IntegrityError as e:
+                print(e)
+                return None
+            session.refresh(dt_base)
+            return dt_base
+    
+    def get_diagnosis_list(self):
+        with rx.session() as session:
+            return session.exec(
+                select(DiagnosisType)
+            ).all()
     
