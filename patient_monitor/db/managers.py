@@ -3,6 +3,7 @@ from ..api.base_models import *
 from ..db.models import *
 from sqlmodel import select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import desc, asc
 
 class PatientManager:
     def create_patient(self, patient_data:PatientBase):
@@ -47,10 +48,10 @@ class PatientManager:
         '''Фильтрация мед историй по активности: True/False'''
         with rx.session() as session:
             patient = self.get_patient_by_lotus_id(lotus_id=patient_id)
-            return session.exec(
+            mh = session.exec(
                 select(MedicalHistory).filter(MedicalHistory.is_active == True, MedicalHistory.patient_id == patient.id)
-            ).all()
-    
+            ).first()
+            return mh    
         
 class MedicalHistoryManager:
     def create_medical_history(self, mh_data: PostMedicatHistoryBase):
@@ -81,6 +82,12 @@ class MedicalHistoryManager:
                 .where(MedicalHistory.lotus_id == lotus_id)
             ).first()
             
+    def get_medical_history_by_id(self, id:str):
+        with rx.session() as session:
+            return session.exec(
+                select(MedicalHistory)
+                .where(MedicalHistory.id == id)
+            ).first()
 
 class DiagnosisManager:
     """ менеджер апи запросов к диагнозам """
@@ -144,4 +151,29 @@ class DiagnosisTypeManager:
             return session.exec(
                 select(DiagnosisType)
             ).all()
-    
+
+
+class PatientParametricsManager:
+    def create_patient_parametrics(self, mh_id:str, pp_data: PatientParametricsBase):
+        pp_data_dict = pp_data.model_dump(by_alias=True) 
+        with rx.session() as session:
+            parametrics = PatientParametrics(
+                **pp_data_dict,
+                mh_id=mh_id,
+            )
+            session.add(parametrics)
+            try:
+                session.commit()
+            except Exception as e:
+                print(e)
+            session.refresh(parametrics)
+            return parametrics
+            
+    def get_all_patient_parametric(self, mh_id:str):
+        with rx.session() as session:
+            return session.exec(
+                select(PatientParametrics)
+                .where(PatientParametrics.mh_id == mh_id)
+                .order_by(desc(PatientParametrics.check_datetime))
+            ).all()
+

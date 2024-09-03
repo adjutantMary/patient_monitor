@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import date, datetime
 from typing import List, Optional
 
@@ -44,11 +44,11 @@ class GetHistoryListBase(BaseModel):
     mh_list: list[GetMedicalHistoryBase] | None = None
     
 class DiagnosisTypeBase(BaseModel):
-# застряла на этапе отношений поля diagnosis с DiagnosisBase. one to many?
-        name: str
-        diagnosis: List["DiagnosisBase"] | None
-        created_at: datetime = None 
-        updated_at: datetime = None
+    # застряла на этапе отношений поля diagnosis с DiagnosisBase. one to many?
+    name: str
+    diagnosis: List["DiagnosisBase"] | None
+    created_at: datetime = None 
+    updated_at: datetime = None
 
 class DiagnosisBase(BaseModel):
     # для этой схемы получилось создать экземпляр в бдшке
@@ -68,3 +68,24 @@ class DiagnosisListBase(BaseModel):
 
 class DiagnosisTypeListBase(BaseModel):
     dt_list: list[DiagnosisTypeBase] | None
+    
+
+class PatientParametricsBase(BaseModel):
+    class Config:
+        populate_by_name = True
+    check_datetime: datetime
+    temperature: float | None = Field(None, alias="temperature")
+    upper_ad: int | None = Field(None, alias="upper_ad")
+    lower_ad: int | None = Field(None, alias="lower_ad")
+    pulse: int | None = Field(None, alias="pulse")
+    oxygen: int | None = Field(None, alias="oxygen")
+    drinked: int | None = Field(None, alias="drinked")
+    infuzi: int | None = Field(None, alias="infuzi")
+    diurez: int | None = Field(None, alias="diurez")
+    height: int | None = Field(None, alias="height")
+    weight: int | None = Field(None, alias="weight")
+    imt: float | None = Field(None, alias="imt")
+    stool: int | None = Field(None, alias="stool")
+
+class PatientParametricsListBase(BaseModel):
+    parametr_check_list: list[PatientParametricsBase] | None

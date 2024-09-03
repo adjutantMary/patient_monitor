@@ -84,12 +84,13 @@ class MedicalHistory(rx.Model, table=True):
     patient: Optional[Patient] = Relationship(
         back_populates="medical_histories"
     )
-    
+    patient_parametres: List["PatientParametrics"] = Relationship(
+        back_populates="mh"
+    )
     is_active: bool = Field(default=False)
     lotus_id: str = Field(unique=True)
     number: str
     current_department_name: str
-    
     income_datetime: datetime = Field(
         default=None,
         sa_column=sa.Column(
@@ -127,6 +128,7 @@ class MedicalHistory(rx.Model, table=True):
     )
     
     def dict(self, *args, **kwargs) -> dict:
+        print("dict method called")
         d = super().dict(*args, **kwargs)
         d["id"] = str(self.id)
         d["income_datetime"] = self.income_datetime.isoformat()
@@ -242,3 +244,79 @@ class DiagnosisType(rx.Model, table=True):
         d["qwe"] = 1
         return d
     
+
+class PatientParametrics(rx.Model, table=True):
+    __tablename__ = 'patient_parametrics'
+    
+    id: UUID = Field(
+        default=None,
+        sa_column=sa.Column(
+            "id",
+            sa.UUID(as_uuid=True),
+            primary_key=True,
+            default=uuid4,
+        ),
+    )
+    mh_id: UUID = Field(foreign_key="medical_history.id") 
+    mh: Optional[MedicalHistory] = Relationship(
+        back_populates="patient_parametres"
+    )
+    
+    check_datetime: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "check_datetime",
+            sa.DateTime()
+        )
+    )
+    
+    temperature: float | None
+    upper_ad: int | None
+    lower_ad: int | None
+    pulse: int | None
+    oxygen: int | None
+    drinked: int | None
+    infuzi: int | None
+    diurez: int | None
+    height: int | None
+    weight: int | None
+    imt: float | None
+    stool: int | None
+    
+    
+    created_at: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.func.now(),
+        )
+    )
+    updated_at: datetime = Field(
+        default=None,
+        sa_column=sa.Column(
+            "updated_at",
+            sa.DateTime(),
+            server_default=sa.func.now(),
+            onupdate=sa.func.now()
+        )
+    )
+    
+    def dict(self, *args, **kwargs) -> dict:
+        d = super().dict(*args, **kwargs)
+        d["id"] = str(self.id)
+        d["check_datetime"] = self.check_datetime.isoformat()
+        d["mh_id"] = str(self.mh_id)
+        d["created_at"] = self.created_at.replace(
+                microsecond=0
+            ).isoformat()
+        d["updated_at"] = self.updated_at.replace(
+                microsecond=0
+            ).isoformat()
+        return d
+    
+    def formated_dict(self, *args, **kwargs) -> dict:
+        d = self.dict(*args, **kwargs)
+        d.pop("id")
+        d.pop("mh_id")
+        return d
