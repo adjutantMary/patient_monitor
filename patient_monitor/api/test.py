@@ -11,8 +11,6 @@ async def get_all_patient() -> PatientsListBase:
     pm = PatientManager()
     patients = pm.get_all_patients()
     return PatientsListBase(patients=[patient.dict() for patient in patients])
-    
-
 
 async def create_patient(patient_data: PatientBase):
     pm = PatientManager()
@@ -49,3 +47,16 @@ async def get_active_mh(patient_id:str) -> GetHistoryListBase:
     pm = PatientManager()
     mh_list = pm.get_active_medical_history(patient_id=patient_id)
     return GetHistoryListBase(mh_list=[mh.dict() for mh in mh_list])
+
+
+async def create_parametrics(patient_lotus_id:str, pp_data: PatientParametricsBase)->PatientParametricsBase:
+    mh = PatientManager().get_active_medical_history(patient_id=patient_lotus_id)
+    mh_id = mh.id
+    parametrics = PatientParametricsManager().create_patient_parametrics(mh_id=mh_id, pp_data=pp_data)
+    return PatientParametricsBase(**parametrics.formated_dict())
+
+async def get_patient_parametrics(patient_lotus_id:str) -> PatientParametricsListBase:
+    mh = PatientManager().get_active_medical_history(patient_id=patient_lotus_id)
+    mh_id = mh.id
+    parametrics_list = PatientParametricsManager().get_all_patient_parametric(mh_id=mh_id)
+    return PatientParametricsListBase(parametr_check_list=[params.formated_dict() for params in parametrics_list])
