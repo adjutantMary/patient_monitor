@@ -24,19 +24,12 @@ def patient_detail_page() -> rx.Component:
             align="right"
         ),
         rx.text(
-            "Круто классно работает",
+            f"айди пациента: {state.PatientInfoState.load_patient_id}"
         ),
-        rx.vstack(
-            react_flow(
-                nodes_draggable=True,
-                nodes_connectable=True,
-                on_nodes_change=lambda e0: State.on_nodes_change(
-                    e0
-                ),
-                nodes=State.nodes,
-                edges=State.edges,
-                fit_view=True,
-            )
+        rx.text(
+            f"Медицинские истории: {state.PatientInfoState.load_medical_histories}"
+            "пупупу"
+            "Круто классно работает",
         ),
         id="my_child",
         

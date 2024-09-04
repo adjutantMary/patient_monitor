@@ -7,15 +7,13 @@ from ..states.patients_list import PatientListState
 
 
 
-def show_patient(patient: PatientBase):
+def show_patient(patient: Patient):
     """Show a customer in a table row."""
-    
-    
     return rx.table.row(
         rx.table.cell(
             rx.link(
                 patient.fio,
-                href="/patient/" + patient.lotus_id
+                href="/patient/"
             )
         ),
         rx.table.cell(patient.birthday),
@@ -35,11 +33,9 @@ def patients_list() -> rx.Component:
                 ),
             ),
             rx.table.body(
-                rx.foreach(
-                    PatientListState.patients, show_patient
-                )
+                
             ),
-            on_mount=PatientListState.load_entries,
+            on_mount=PatientListState.load_entries
             width="100%",
             variant="surface",
         )
