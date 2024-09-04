@@ -1,7 +1,9 @@
 import reflex as rx
+from reactflow  import react_flow
 
 from ..pages.base import base_page
 from ..api.base_models import PatientBase
+from ..components.dragging_state import State
 
 from . import state
 
@@ -24,10 +26,19 @@ def patient_detail_page() -> rx.Component:
         rx.text(
             "Круто классно работает",
         ),
-        # spacing="5",
-        # justify="center",
-        # # align='center',
-        # min_height='85vh',
-        id="my_child"
+        rx.vstack(
+            react_flow(
+                nodes_draggable=True,
+                nodes_connectable=True,
+                on_nodes_change=lambda e0: State.on_nodes_change(
+                    e0
+                ),
+                nodes=State.nodes,
+                edges=State.edges,
+                fit_view=True,
+            )
+        ),
+        id="my_child",
+        
     )
     return base_page(my_child)
